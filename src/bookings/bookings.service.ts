@@ -84,7 +84,17 @@ export class BookingsService {
     return this.bookingRepository.save(booking);
   }
 
-  cancel(id: number) {
-    return `This action removes a #${id} booking`;
+  async cancel(id: number) {
+    const booking = await this.findOne(id);
+    if (booking.hasPassed()) {
+      throw new ForbiddenException('Booking has passed');
+    }
+
+    const result = await this.bookingRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Booking with ID ${id} not found`);
+    }
+
+    return { message: 'Booking successfully canceled' };
   }
 }
