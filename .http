@@ -38,10 +38,20 @@ Content-Type: application/json
 
 {
   "carId": 2,
-  "startDate": "2023-12-01T20:16:00Z",
-  "endDate": "2024-12-01T21:16:00Z"
+  "startDate": "2026-11-19T19:58:00Z",
+  "endDate": "2026-12-01T21:16:00Z"
 }
 
 
 ### Find one booking
 GET http://localhost:3000/bookings/1
+
+
+### Update booking
+PATCH http://localhost:3000/bookings/2
+Content-Type: application/json
+
+{
+  "startDate": "2024-11-19T19:58:00Z",
+  "endDate": "2024-12-01T21:16:00Z"
+}

@@ -21,4 +21,8 @@ export class Booking {
   @ManyToOne(() => Car, (car) => car.bookings, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'car_id' })
   car: Car;
+
+  public hasPassed() {
+    return this.startDate.getTime() <= new Date().getTime();
+  }
 }
