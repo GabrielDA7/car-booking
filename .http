@@ -1,0 +1,15 @@
+### Create Car
+POST http://localhost:3000/cars
+Content-Type: application/json
+
+{
+  "model": "Maserati"
+}
+
+### Create Car with missing property
+POST http://localhost:3000/cars
+Content-Type: application/json
+
+{
+  "wrongProperty": "Maserati"
+}

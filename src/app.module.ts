@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CarsModule } from './cars/cars.module';
+import { Car } from './cars/entities/car.entity';
 
 @Module({
   imports: [
@@ -7,8 +9,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       type: 'sqlite',
       database: 'db/sql',
       synchronize: true,
-      entities: [],
+      entities: [Car],
     }),
+    CarsModule,
   ],
   controllers: [],
   providers: [],
