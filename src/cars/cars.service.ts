@@ -29,8 +29,10 @@ export class CarsService {
     return car;
   }
 
-  update(id: number, updateCarDto: UpdateCarDto) {
-    return `This action updates a #${id} car`;
+  async update(id: number, updateCarDto: UpdateCarDto) {
+    const car = await this.findOne(id);
+    Object.assign(car, updateCarDto);
+    return this.carRepository.save(car);
   }
 
   remove(id: number) {

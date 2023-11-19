@@ -19,3 +19,11 @@ GET http://localhost:3000/cars
 
 ### Find one car
 GET http://localhost:3000/cars/0
+
+### Update car
+PATCH http://localhost:3000/cars/0
+Content-Type: application/json
+
+{
+  "model": "Porsche"
+}
