@@ -61,7 +61,7 @@ export class BookingsService {
   }
 
   async create(createBookingDto: CreateBookingDto) {
-    const queryRunner = await this.dataSource.createQueryRunner();
+    const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     const repository = queryRunner.manager.getRepository(Booking);
