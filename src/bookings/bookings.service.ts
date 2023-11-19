@@ -8,7 +8,13 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './entities/booking.entity';
-import { LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
+import {
+  DataSource,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import { CarsService } from '../cars/cars.service';
 import { Car } from '../cars/entities/car.entity';
 
@@ -18,16 +24,27 @@ export class BookingsService {
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
     private readonly carsService: CarsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   private async checkCarAvailability(
     car: Car,
     startDate: Date,
     endDate: Date,
-    exception?: number,
+    options?: {
+      exception?: number;
+      transactionalRepository?: Repository<Booking>;
+    },
   ): Promise<void> {
-    const condition = exception ? { id: Not(exception) } : undefined;
-    const existingBookings = await this.bookingRepository.find({
+    const manager = options?.transactionalRepository
+      ? options.transactionalRepository
+      : this.bookingRepository;
+
+    const condition = options?.exception
+      ? { id: Not(options?.exception) }
+      : undefined;
+
+    const existingBookings = await manager.find({
       where: {
         car: {
           id: car.id,
@@ -44,14 +61,33 @@ export class BookingsService {
   }
 
   async create(createBookingDto: CreateBookingDto) {
-    const car = await this.carsService.findOne(createBookingDto.carId);
-    await this.checkCarAvailability(
-      car,
-      createBookingDto.startDate,
-      createBookingDto.endDate,
-    );
-    const booking = this.bookingRepository.create({ ...createBookingDto, car });
-    return await this.bookingRepository.save(booking);
+    const queryRunner = await this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const car = await this.carsService.findOne(createBookingDto.carId);
+      await this.checkCarAvailability(
+        car,
+        createBookingDto.startDate,
+        createBookingDto.endDate,
+        { transactionalRepository: queryRunner.manager.getRepository(Booking) },
+      );
+      const booking = this.bookingRepository.create({
+        ...createBookingDto,
+        car,
+      });
+      const savedBooking = await queryRunner.manager
+        .getRepository(Booking)
+        .save(booking);
+      await queryRunner.commitTransaction();
+      return savedBooking;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findOne(id: number) {
@@ -77,7 +113,7 @@ export class BookingsService {
       booking.car,
       updateBookingDto.startDate,
       updateBookingDto.endDate,
-      id,
+      { exception: id },
     );
 
     Object.assign(booking, updateBookingDto);

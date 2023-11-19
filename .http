@@ -18,10 +18,10 @@ Content-Type: application/json
 GET http://localhost:3000/cars
 
 ### Find one car
-GET http://localhost:3000/cars/0
+GET http://localhost:3000/cars/4
 
 ### Update car
-PATCH http://localhost:3000/cars/0
+PATCH http://localhost:3000/cars/4
 Content-Type: application/json
 
 {
@@ -37,9 +37,9 @@ POST http://localhost:3000/bookings
 Content-Type: application/json
 
 {
-  "carId": 2,
-  "startDate": "2026-11-19T19:58:00Z",
-  "endDate": "2026-12-01T21:16:00Z"
+  "carId": 4,
+  "startDate": "2026-01-01T08:00:00Z",
+  "endDate": "2026-01-01T09:00:00Z"
 }
 
 
