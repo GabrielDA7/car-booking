@@ -35,7 +35,11 @@ export class CarsService {
     return this.carRepository.save(car);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} car`;
+  async remove(id: number) {
+    const result = await this.carRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Car with ID ${id} not found`);
+    }
+    return { message: 'Car successfully deleted' };
   }
 }
