@@ -41,3 +41,7 @@ Content-Type: application/json
   "startDate": "2023-12-01T20:16:00Z",
   "endDate": "2024-12-01T21:16:00Z"
 }
+
+
+### Find one booking
+GET http://localhost:3000/bookings/1
