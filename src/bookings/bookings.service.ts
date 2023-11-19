@@ -64,22 +64,20 @@ export class BookingsService {
     const queryRunner = await this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
+    const repository = queryRunner.manager.getRepository(Booking);
     try {
       const car = await this.carsService.findOne(createBookingDto.carId);
       await this.checkCarAvailability(
         car,
         createBookingDto.startDate,
         createBookingDto.endDate,
-        { transactionalRepository: queryRunner.manager.getRepository(Booking) },
+        { transactionalRepository: repository },
       );
       const booking = this.bookingRepository.create({
         ...createBookingDto,
         car,
       });
-      const savedBooking = await queryRunner.manager
-        .getRepository(Booking)
-        .save(booking);
+      const savedBooking = await repository.save(booking);
       await queryRunner.commitTransaction();
       return savedBooking;
     } catch (err) {

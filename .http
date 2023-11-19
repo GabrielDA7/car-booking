@@ -38,8 +38,8 @@ Content-Type: application/json
 
 {
   "carId": 4,
-  "startDate": "2026-01-01T08:00:00Z",
-  "endDate": "2026-01-01T09:00:00Z"
+  "startDate": "2026-02-01T08:00:00Z",
+  "endDate": "2026-02-01T09:00:00Z"
 }
 
 
