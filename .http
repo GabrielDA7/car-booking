@@ -16,3 +16,6 @@ Content-Type: application/json
 
 ### Find all cars
 GET http://localhost:3000/cars
+
+### Find one car
+GET http://localhost:3000/cars/0
