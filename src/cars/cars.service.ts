@@ -18,7 +18,7 @@ export class CarsService {
   }
 
   findAll() {
-    return `This action returns all cars`;
+    return this.carRepository.find();
   }
 
   findOne(id: number) {

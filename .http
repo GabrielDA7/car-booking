@@ -13,3 +13,6 @@ Content-Type: application/json
 {
   "wrongProperty": "Maserati"
 }
+
+### Find all cars
+GET http://localhost:3000/cars
